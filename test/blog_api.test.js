@@ -86,6 +86,23 @@ test('a new blog is created successfully', async () => {
     expect(response.body).toHaveLength(initialBlogs.length + 1)
 })
 
+test('post with no likes equal to zero', async () => {
+    const newBlog = {
+        title: "no likes",
+        author: "Leandro Robert",
+        url: "http://blog.cleancoder.com/uncle-bob/2016/05/01/nuevo.html",
+    }
+
+    await api
+        .post('/api/blogs')
+        .send(newBlog)
+
+    const response = await api.get('/api/blogs')
+    const blog = response.body.filter(blog => blog.title === "no likes")
+
+    expect(blog[0].likes).toBe(0)
+})
+
 afterAll(() => {
     mongoose.connection.close()
 })
