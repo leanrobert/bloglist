@@ -1,4 +1,3 @@
-const { result } = require('lodash')
 const listHelper = require('../utils/list_helpers')
 
 const listWithOneBlog = [
@@ -132,5 +131,22 @@ describe('author with most blogs', () => {
     test('of many returns the aproppiate', () => {
         const result = listHelper.mostBlogs(blogs)
         expect(result).toEqual({ author: 'Robert C. Martin', blogs: 3 })
+    })
+})
+
+describe('author with most likes', () => {
+    test('of empty returns null', () => {
+        const result = listHelper.mostLikes([])
+        expect(result).toEqual({ author: '', likes: 0 })
+    })
+
+    test('of one, returns the same', () => {
+        const result = listHelper.mostLikes(listWithOneBlog)
+        expect(result).toEqual({ author: 'Edsger W. Dijkstra', likes: 5 })
+    })
+
+    test('of many returns the aproppiate', () => {
+        const result = listHelper.mostLikes(blogs)
+        expect(result).toEqual({ author: "Edsger W. Dijkstra", likes: 17 })
     })
 })

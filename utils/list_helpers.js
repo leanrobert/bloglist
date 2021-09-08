@@ -26,8 +26,8 @@ const favoriteBlog = (blogs) => {
 
 const mostBlogs = (blogs) => {
     const authors = _.countBy(blogs.map(blog => blog.author))
-    max = 0
-    author = ''
+    let max = 0
+    let author = ''
     for (const [key, value] of Object.entries(authors)) {
         if(value > max) {
             max = value
@@ -38,4 +38,27 @@ const mostBlogs = (blogs) => {
     return { author: author, blogs: max }
 }
 
-module.exports = { dummy, totalLikes, favoriteBlog, mostBlogs }
+const mostLikes = (blogs) => {
+    const authors = _.uniq(blogs.map(blog => blog.author))
+    let total = 0
+    let author = ''
+    for(let i = 0; i < authors.length; i++) {
+        let likes = 0
+        blogs.map(blog => {
+            if(blog.author === authors[i]) {
+                likes = likes + blog.likes
+            }
+        })
+        if(total < likes) {
+            total = likes
+            author = authors[i]
+        }
+    }
+
+    return({
+        author: author,
+        likes: total
+    })
+}
+
+module.exports = { dummy, totalLikes, favoriteBlog, mostBlogs, mostLikes }
