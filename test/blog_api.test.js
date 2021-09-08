@@ -69,6 +69,23 @@ test('check property is named id', async () => {
     expect(blogs.body[0].id).toBeDefined()
 })
 
+test('a new blog is created successfully', async () => {
+    const newBlog = {
+        title: "nuevo",
+        author: "Leandro Robert",
+        url: "http://blog.cleancoder.com/uncle-bob/2016/05/01/nuevo.html",
+        likes: 4
+    }
+
+    await api
+        .post('/api/blogs')
+        .send(newBlog)
+    
+    const response = await api.get('/api/blogs')
+
+    expect(response.body).toHaveLength(initialBlogs.length + 1)
+})
+
 afterAll(() => {
     mongoose.connection.close()
 })
