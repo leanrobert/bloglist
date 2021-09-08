@@ -64,6 +64,11 @@ test('correct amount of blogs', async () => {
     expect(response.body).toHaveLength(initialBlogs.length)
 }, 100000)
 
+test('check property is named id', async () => {
+    const blogs = await api.get('/api/blogs')
+    expect(blogs.body[0].id).toBeDefined()
+})
+
 afterAll(() => {
     mongoose.connection.close()
 })
