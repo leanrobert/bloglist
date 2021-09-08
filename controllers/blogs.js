@@ -12,6 +12,10 @@ blogsRouter.get('/', (req, res) => {
 blogsRouter.post('/', (req, res) => {
     const blog = new Blog(req.body)
 
+    if(!blog.title || !blog.url) {
+        return res.status(400).send({ error: 'Title or url missing' })
+    }
+
     blog
         .save()
         .then(result => {
