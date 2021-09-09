@@ -1,8 +1,10 @@
 const mongoose = require('mongoose')
 const supertest = require('supertest')
+const bcrypt = require('bcrypt')
 const app = require('../app')
 const api = supertest(app)
 const Blog = require('../models/blog')
+const User = require('../models/user')
 
 const initialBlogs = [
     {
@@ -117,6 +119,33 @@ test('post with no title or url response 400', async () => {
     const response = await api.get('/api/blogs')
 
     expect(response.body).toHaveLength(initialBlogs.length)
+})
+
+describe('when there is initially one user in db', () => {
+    beforeEach(async () => {
+        await User.deleteMany({})
+
+        const passwordHash = await bcrypt.hash('sekret', 10)
+        const user = new User({ username: 'root', passwordHash })
+
+        await user.save()
+    })
+
+    test('creation fails with user with less than 3 characters', async () => {
+        const newUser = { username: 'le', password: '1234'}
+
+        const result = await api.post('/api/users').send(newUser).expect(400)
+
+        expect(result.text).toBe("{\"error\":\"User validation failed: username: Path `username` (`" + newUser.username + "`) is shorter than the minimum allowed length (3).\"}")
+    })
+
+    test('creation fails with password with less than 3 characters', async () => {
+        const newUser = { username: 'lemenm', password: '12'}
+
+        const result = await api.post('/api/users').send(newUser).expect(401)
+
+        expect(result.text).toBe("{\"error\":\"invalid username or password\"}")
+    })
 })
 
 afterAll(() => {
